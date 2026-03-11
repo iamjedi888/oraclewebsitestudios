@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TriptokForge — Esports Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #020408;
+    --deep: #060d18;
+    --panel: #0a1628;
+    --border: #1a3a5c;
+    --accent: #00d4ff;
+    --accent2: #ff6b00;
+    --glow: rgba(0,212,255,0.15);
+    --text: #c8dff0;
+    --dim: #4a6a8a;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCAN LINE */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -100%;
+    left: 0;
+    right: 0;
+    height: 200%;
+    background: linear-gradient(transparent 50%, rgba(0,212,255,0.015) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 0;
+    animation: scan 8s linear infinite;
+  }
+
+  @keyframes scan { to { transform: translateY(50%); } }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(2,4,8,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--dim);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent) !important;
+    padding: 8px 24px;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px !important;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s !important;
+    text-decoration: none;
+  }
+
+  .nav-cta:hover {
+    background: var(--accent) !important;
+    color: var(--black) !important;
+    box-shadow: 0 0 20px var(--accent);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    z-index: 1;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,212,255,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,107,0,0.06) 0%, transparent 60%);
+    z-index: -1;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    border: 1px solid rgba(255,107,0,0.3);
+    padding: 6px 18px;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(36px, 7vw, 90px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero h1 .line1 { color: #fff; display: block; }
+  .hero h1 .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--accent);
+    display: block;
+  }
+
+  .hero p {
+    max-width: 560px;
+    margin: 0 auto 48px;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--dim);
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--accent);
+    color: var(--black);
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    text-decoration: none;
+    transition: all 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  .btn-primary:hover {
+    background: #fff;
+    box-shadow: 0 0 40px var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 15px 36px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 20px rgba(0,212,255,0.1);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,22,40,0.6);
+    backdrop-filter: blur(8px);
+  }
+
+  .stat-item {
+    flex: 1;
+    max-width: 220px;
+    padding: 28px 24px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* FEATURES */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .section-sub {
+    color: var(--dim);
+    font-size: 17px;
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 64px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .feature-card {
+    background: var(--panel);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover { background: #0d1f38; }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    font-size: 28px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .feature-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .feature-desc {
+    font-size: 15px;
+    color: var(--dim);
+    line-height: 1.6;
+  }
+
+  /* ISLAND FORGE CALLOUT */
+  .forge-section {
+    position: relative;
+    z-index: 1;
+    margin: 0 48px 100px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 360px;
+  }
+
+  .forge-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 100% at 0% 50%, rgba(0,212,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .forge-content {
+    padding: 64px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .forge-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 20px;
+  }
+
+  .forge-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(22px, 3vw, 36px);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .forge-desc {
+    color: var(--dim);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 36px;
+  }
+
+  .forge-visual {
+    position: relative;
+    overflow: hidden;
+    background: var(--deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .forge-grid-anim {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+    animation: gridMove 4s linear infinite;
+  }
+
+  @keyframes gridMove {
+    to { background-position: 32px 32px; }
+  }
+
+  .forge-hex {
+    position: relative;
+    z-index: 1;
+    font-family: 'Orbitron', monospace;
+    font-size: 72px;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(0,212,255,0.3);
+    letter-spacing: -4px;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { -webkit-text-stroke-color: rgba(0,212,255,0.3); }
+    50% { -webkit-text-stroke-color: rgba(0,212,255,0.8); text-shadow: 0 0 60px rgba(0,212,255,0.3); }
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--deep);
+  }
+
+  .footer-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--dim);
+    letter-spacing: 3px;
+  }
+
+  .footer-logo span { color: var(--accent2); }
+
+  .footer-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    color: var(--dim);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--dim);
+    opacity: 0.5;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .section { padding: 60px 20px; }
+    .forge-section { grid-template-columns: 1fr; margin: 0 20px 60px; }
+    .forge-visual { min-height: 200px; }
+    .forge-content { padding: 40px 32px; }
+    .stats-bar { flex-wrap: wrap; }
+    .stat-item { min-width: 50%; border-bottom: 1px solid var(--border); }
+    footer { flex-direction: column; gap: 24px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Triptok<span>Forge</span></a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#forge">Island Forge</a></li>
+    <li><a href="privacy.html">Privacy</a></li>
+    <li><a href="http://129.80.222.152:5000" class="nav-cta">Launch App →</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div>
+    <div class="hero-tag">⚡ Esports Platform — Members Only</div>
+    <h1>
+      <span class="line1">FORGE YOUR</span>
+      <span class="line2">LEGACY</span>
+    </h1>
+    <p>Connect your Epic Games account. Build your member profile. Access tools built for serious Fortnite players and creators.</p>
+    <div class="hero-buttons">
+      <a href="http://129.80.222.152:5000/auth/epic" class="btn-primary">
+        ⚡ Connect Epic Account
+      </a>
+      <a href="#features" class="btn-secondary">
+        Explore Platform →
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-num">FREE</span>
+    <span class="stat-label">Always</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">UEFN</span>
+    <span class="stat-label">Island Tools</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">EPIC</span>
+    <span class="stat-label">OAuth Login</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">PRO</span>
+    <span class="stat-label">Member Cards</span>
+  </div>
+</div>
+
+<section class="section" id="features">
+  <div class="section-tag">// Platform Features</div>
+  <h2 class="section-title">Everything You Need</h2>
+  <p class="section-sub">Built for Fortnite creators and competitive players. Login once with Epic, unlock everything.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🎮</span>
+      <div class="feature-title">Epic Account Login</div>
+      <p class="feature-desc">Secure OAuth2 authentication directly through Epic Games. Your real account, your real identity.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🃏</span>
+      <div class="feature-title">3D Member Card</div>
+      <p class="feature-desc">Holographic player ID card with your stats, chosen skin, and rank. Shareable and always live.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📊</span>
+      <div class="feature-title">Live Stats</div>
+      <p class="feature-desc">K/D ratio, win rate, season performance — pulled live from Fortnite and displayed on your profile.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🏝️</span>
+      <div class="feature-title">Island Forge</div>
+      <p class="feature-desc">Generate UEFN-ready island heightmaps from audio files. Export directly to your Fortnite Creative builds.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🎨</span>
+      <div class="feature-title">Skin Avatar</div>
+      <p class="feature-desc">Browse the full Fortnite cosmetics library and pick any skin as your profile avatar.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🏆</span>
+      <div class="feature-title">Members Only</div>
+      <p class="feature-desc">All tools and features gated behind Epic account verification. Real players only.</p>
+    </div>
+  </div>
+</section>
+
+<div class="forge-section" id="forge">
+  <div class="forge-content">
+    <div class="forge-label">// Tool — Island Forge</div>
+    <h2 class="forge-title">Generate Islands<br>From Sound</h2>
+    <p class="forge-desc">Upload any audio file. Island Forge analyzes the frequency bands and generates a unique UEFN-ready heightmap — mountains from bass, rivers from rhythm, biomes from tone.</p>
+    <a href="http://129.80.222.152:5000" class="btn-primary">Open Island Forge →</a>
+  </div>
+  <div class="forge-visual">
+    <div class="forge-grid-anim"></div>
+    <div class="forge-hex">IF</div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Triptok<span>Forge</span></div>
+  <ul class="footer-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="http://129.80.222.152:5000">Island Forge</a></li>
+    <li><a href="privacy.html">Privacy Policy</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 EuphoriÆ Studios</div>
+</footer>
+
+</body>
+</html>
